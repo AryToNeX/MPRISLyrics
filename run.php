@@ -34,17 +34,47 @@ $text = null;
 $noLyrics = false;
 $lastline = -1;
 $lastposition = 0;
+$isStopped = false;
+
+if(empty($player->getPlayers())){
+    echo "It seems that there are no MPRIS-capable music players opened. Exiting...\n";
+    exit(0);
+}
 
 // TODO: A method to calculate microseconds
 
 while(true){
-    $newInfo = array($player->getArtist(), $player->getTitle());
+    try{
+        if($player->getStatus() == "Stopped"){
+            if(!$isStopped){
+                echo "\033[2J\033[H";
+                echo "Music player is stopped; please play some music.\n";
+            }
+            $isStopped = true;
+            continue;
+        }else{
+            $isStopped = false;
+        }
+    }catch (Exception $e){
+        // why would this happen? anyway here's some dumb code
+        $player->setActivePlayer($player->getPlayers()[0] ?? null);
+        continue;
+    }
+
+    try{
+        $newInfo = array($player->getArtist(), $player->getTitle());
+    }catch (Exception $e){
+        // why would this happen? anyway here's some dumb code
+        $player->setActivePlayer($player->getPlayers()[0] ?? null);
+        continue;
+    }
+
     if(array_diff($newInfo, $oldInfo) !== array()){
         echo "\033[2J\033[H";
-        echo "Now playing: " . $player->getArtist() . " - " . $player->getTitle() . "\n";
+        echo "Now playing: " . $newInfo[0] . " - " . $newInfo[1] . "\n";
         echo "\n";
         $noLyrics = false;
-        $text = textArr(Musixmatch::stripSyncedLyrics(Musixmatch::fetchLyrics($player->getArtist(), $player->getTitle())));
+        $text = textArr(Musixmatch::stripSyncedLyrics(Musixmatch::fetchLyrics($newInfo[0], $newInfo[1])));
         $oldInfo = $newInfo;
         $lastline = -1;
         $lastposition = 0;
@@ -55,7 +85,13 @@ while(true){
     }
     if($noLyrics) continue;
 
-    $position = $player->getPosition();
+    try {
+        $position = $player->getPosition();
+    }catch (Exception $e){
+        // why would this happen? anyway here's some dumb code
+        $player->setActivePlayer($player->getPlayers()[0] ?? null);
+        continue;
+    }
 
 
     // CHOOSE ONE OF THE BROKEN DISPLAY METHODS
@@ -73,7 +109,7 @@ while(true){
     /*
      * This display method prints X rows of lyrics, with the one in the center being in bold character format.
      */
-    displayRows($position, $player->getArtist(), $player->getTitle(), $text, $lastline, 11);
+    displayRows($position, $text, $lastline, 5);
 
     $lastposition = $position;
 }
@@ -84,8 +120,8 @@ function textArr($rawText){
     $newText = array();
     foreach($rawText as $index => $line){
         $time = explode(":", str_replace(".", ":", substr($line, 1, 8)));
-        $time = ($time[2] / 100) + $time[1] + ($time[0] * 60);
-        $verse = substr($line, 11);
+        $time = /*($time[2] / 100) + */ $time[1] + ($time[0] * 60);
+        $verse = trim(substr($line, 10));
         $newText[] = array("time" => substr($line, 1, 8), "timestamp" => $time, "verse" => $verse);
     }
 
@@ -123,7 +159,7 @@ function displayWriteTextProcedurally($position, $text, &$lastline, &$lastpositi
     $lastline = $line;
 }
 
-function displayRows($position, $artist, $title, $text, &$lastline, $rownum = 5){
+function displayRows($position, $text, &$lastline, $rownum = 5){
     $line = currentLine($text, $position);
     if($line == $lastline) return;
 
