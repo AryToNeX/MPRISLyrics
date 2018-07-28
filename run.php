@@ -129,11 +129,10 @@ function textArr($rawText){
 }
 
 function currentLine($rawText, $position){
-    $line = -1;
+    $line = count($rawText) - 1; // set this to last verse to compensate the next checks
     for($i = 0; $i < count($rawText); $i++){
-        if($rawText[$i]["timestamp"] > $position){
-            if(isset($rawText[$i-1]))
-                $line = $i - 1;
+        if(isset($rawText[$i+1]["timestamp"]) && $position < $rawText[$i+1]["timestamp"]){
+            $line = $i;
             break;
         }
     }
