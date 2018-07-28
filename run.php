@@ -144,7 +144,7 @@ function displaySingleLine($position, $text, &$lastline){
     if($line == $lastline) return;
 
     echo "\033[2K\r";
-    echo $line == -1 ? "" : $text[$line]["verse"];
+    echo $text[$line]["verse"];
     $lastline = $line;
 }
 
@@ -154,7 +154,7 @@ function displayWriteTextProcedurally($position, $text, &$lastline, &$lastpositi
 
     if($position < $lastposition) echo "\n----------\n\n"; // if you go backwards in the track, output lyrics break
 
-    echo $line == -1 ? "" : $text[$line]["verse"] . "\n";
+    echo $text[$line]["verse"] . "\n";
     $lastline = $line;
 }
 
