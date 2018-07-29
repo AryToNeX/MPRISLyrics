@@ -18,9 +18,7 @@ class OfflineProvider{
     }
 
     public function fetchLyrics($artist, $title){
-        if($this->offlineHelper->checkLyrics($artist, $title))
-            return file_get_contents("lyrics/$artist/$title.lrc");
-        return null;
+        return $this->offlineHelper->getLyrics($artist, $title);
     }
 
 }

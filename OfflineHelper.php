@@ -18,6 +18,12 @@ class OfflineHelper{
         return is_file($this->workdir . "/lyrics/$artist/$title.lrc");
     }
 
+    public function getLyrics($artist, $title){
+        if($this->checkLyrics($artist, $title))
+            return file_get_contents($this->workdir . "/lyrics/$artist/$title.lrc");
+        return null;
+    }
+
     public function saveLyrics($artist, $title, $lyrics, $overwrite = false){
         @mkdir($this->workdir . "/lyrics");
         @mkdir($this->workdir . "/lyrics/$artist");
