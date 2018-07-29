@@ -24,16 +24,16 @@ pcntl_signal(SIGINT, function(){
     exit(0);
 });
 
-include_once "Display.php";
-include_once "LrcUtils.php";
-include_once "LrcFactory.php";
-include_once "OfflineHelper.php";
-include_once "PlayerCtl.php";
-include_once "providers/Musixmatch.php";
-include_once "providers/OfflineProvider.php";
+include_once __DIR__ . "/Display.php";
+include_once __DIR__ . "/LrcUtils.php";
+include_once __DIR__ . "/LrcFactory.php";
+include_once __DIR__ . "/OfflineHelper.php";
+include_once __DIR__ . "/PlayerCtl.php";
+include_once __DIR__ . "/providers/Musixmatch.php";
+include_once __DIR__ . "/providers/OfflineProvider.php";
 
 $player = new PlayerCtl();
-$lrc = new LrcFactory(new OfflineHelper());
+$lrc = new LrcFactory(new OfflineHelper(__DIR__)); // TODO: Custom lyrics path
 
 $oldInfo = array(null, null);
 $text = null;

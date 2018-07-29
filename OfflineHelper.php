@@ -8,15 +8,21 @@
 
 class OfflineHelper{
 
+    private $workdir;
+
+    public function __construct($workdir){
+        $this->workdir = $workdir;
+    }
+
     public function checkLyrics($artist, $title){
-        return is_file("lyrics/$artist/$title.lrc");
+        return is_file($this->workdir . "/lyrics/$artist/$title.lrc");
     }
 
     public function saveLyrics($artist, $title, $lyrics, $overwrite = false){
-        @mkdir("lyrics");
-        @mkdir("lyrics/$artist");
+        @mkdir($this->workdir . "/lyrics");
+        @mkdir($this->workdir . "/lyrics/$artist");
         if(!$this->checkLyrics($artist, $title) || $overwrite)
-            file_put_contents("lyrics/$artist/$title.lrc", $lyrics);
+            file_put_contents($this->workdir . "/lyrics/$artist/$title.lrc", $lyrics);
     }
 
 }
