@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: anthony
- * Date: 28/07/18
- * Time: 3.34
- */
 
 class OfflineHelper{
 

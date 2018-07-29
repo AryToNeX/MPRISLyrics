@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: anthony
- * Date: 28/07/18
- * Time: 2.57
- */
 
 class LrcFactory{
 
@@ -16,9 +10,15 @@ class LrcFactory{
         $providersInfo = array();
         foreach(glob("providers/*.php") as $providerClass){
             $className = pathinfo($providerClass, PATHINFO_FILENAME);
+            try {
+                $isAbstract = (new ReflectionClass($className))->isAbstract();
+            } catch (ReflectionException $e){
+                $isAbstract = true; // we don't know so we assume it's abstract for security purposes
+            }
             $providersInfo[] = array(
                 "name" => $className,
-                "priority" => constant("$className::PROVIDER_PRIORITY")
+                "priority" => constant("$className::PROVIDER_PRIORITY"),
+                "is_abstract" => $isAbstract
             );
         }
 
@@ -29,6 +29,7 @@ class LrcFactory{
 
         // instantiate all providers
         foreach($providersInfo as $provider){
+            if($provider["is_abstract"]) continue; // don't instantiate abstract classes
             $obj = new $provider["name"];
             if(method_exists($obj, "setOfflineHelper"))
                 $obj->setOfflineHelper($offlineHelper);

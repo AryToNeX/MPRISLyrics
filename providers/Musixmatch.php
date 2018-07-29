@@ -5,18 +5,11 @@
  * I don't even know how to fix this when it breaks, so as long as it works let's keep this, then switch to LyricWiki.
  */
 
-class Musixmatch{
+class Musixmatch extends Provider{
 
     const PROVIDER_PRIORITY = 1;
 
     const URL = "https://apic-desktop.musixmatch.com/ws/1.1/macro.subtitles.get?format=json&q_track={title}&q_artist={artist}&user_language=en&f_subtitle_length=0&f_subtitle_length_max_deviation=0&subtitle_format=lrc&app_id=web-desktop-app-v1.0&guid=e08e6c63-edd1-4207-86dc-d350cdf7f4bc&usertoken=1710144894f79b194e5a5866d9e084d48f227d257dcd8438261277";
-
-    /** @var OfflineHelper $offlineHelper */
-    private $offlineHelper;
-
-    public function setOfflineHelper($offlineHelper){
-        $this->offlineHelper = $offlineHelper;
-    }
 
     public function fetchLyrics($artist, $title){
         $url = str_replace(["{title}", "{artist}"], [urlencode($title), urlencode($artist)], self::URL);

@@ -29,6 +29,7 @@ include_once __DIR__ . "/LrcUtils.php";
 include_once __DIR__ . "/LrcFactory.php";
 include_once __DIR__ . "/OfflineHelper.php";
 include_once __DIR__ . "/PlayerCtl.php";
+include_once __DIR__ . "/providers/Provider.php";
 include_once __DIR__ . "/providers/Musixmatch.php";
 include_once __DIR__ . "/providers/OfflineProvider.php";
 
