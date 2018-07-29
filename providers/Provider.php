@@ -2,7 +2,7 @@
 
 abstract class Provider{
 
-    const PROVIDER_PRIORITY = 1;
+    public const PROVIDER_PRIORITY = 1;
 
     /** @var OfflineHelper $offlineHelper */
     protected $offlineHelper;
