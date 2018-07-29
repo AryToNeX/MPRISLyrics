@@ -31,6 +31,7 @@ include_once __DIR__ . "/OfflineHelper.php";
 include_once __DIR__ . "/PlayerCtl.php";
 include_once __DIR__ . "/providers/Provider.php";
 include_once __DIR__ . "/providers/Musixmatch.php";
+include_once __DIR__ . "/providers/Baidu.php";
 include_once __DIR__ . "/providers/OfflineProvider.php";
 
 $player = new PlayerCtl();
