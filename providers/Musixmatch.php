@@ -40,7 +40,7 @@ class Musixmatch{
 
         $lyrics = json_decode($result, true)["message"]["body"]["macro_calls"]["track.subtitles.get"]["message"]["body"]["subtitle_list"][0]["subtitle"]["subtitle_body"] ?? null;
 
-        if(is_string($lyrics)){
+        if(is_string($lyrics) && $lyrics !== ""){
             if(isset($this->offlineHelper))
                 $this->offlineHelper->saveLyrics($artist, $title, $lyrics);
             return $lyrics;
