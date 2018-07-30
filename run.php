@@ -33,6 +33,7 @@ include_once __DIR__ . "/providers/Provider.php";
 include_once __DIR__ . "/providers/Musixmatch.php";
 include_once __DIR__ . "/providers/Baidu.php";
 include_once __DIR__ . "/providers/OfflineProvider.php";
+include_once __DIR__ . "/providers/ViewLyrics.php";
 
 $player = new PlayerCtl();
 $lrc = new LrcFactory(new OfflineHelper(__DIR__)); // TODO: Custom lyrics path
