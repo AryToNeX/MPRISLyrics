@@ -14,7 +14,8 @@ class ViewLyrics extends Provider{
                 $lyrics = file_get_contents(self::SERVER_URL . $item["@attributes"]["link"]);
 
                 if(is_string($lyrics) && $lyrics !== "") {
-                    $this->offlineHelper->saveLyrics($artist, $title, $lyrics);
+                    if(isset($this->offlineHelper))
+                        $this->offlineHelper->saveLyrics($artist, $title, $lyrics);
                 }
 
                 return $lyrics;
