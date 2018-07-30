@@ -7,7 +7,7 @@ class ViewLyrics extends Provider{
     private const SERVER_URL = "http://minilyrics.com/";
     private const QUERY = "<?xml version='1.0' encoding='utf-8' standalone='yes' ?><searchV1 client=\"ViewLyricsOpenSearcher\" artist=\"{artist}\" title=\"{title}\" OnlyMatched=\"1\" />";
 
-    public function fetchLyrics(string $artist, string $title) : string{
+    public function fetchLyrics(string $artist, string $title) : ?string{
         $ly = $this->queryViewLyrics($artist, $title)["fileinfo"];
         foreach($ly as $item) {
             if(pathinfo($item["@attributes"]["link"], PATHINFO_EXTENSION) == "lrc") {
@@ -24,7 +24,7 @@ class ViewLyrics extends Provider{
         return null;
     }
 
-    private function queryViewLyrics(string $artist, string $title) : array{
+    private function queryViewLyrics(string $artist, string $title) : ?array{
         $ch = curl_init(self::URL);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_USERAGENT, "MiniLyrics");

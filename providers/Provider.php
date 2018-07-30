@@ -11,5 +11,5 @@ abstract class Provider{
         $this->offlineHelper = $offlineHelper;
     }
 
-    abstract public function fetchLyrics(string $artist, string $title) : string;
+    abstract public function fetchLyrics(string $artist, string $title) : ?string;
 }

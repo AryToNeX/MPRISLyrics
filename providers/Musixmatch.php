@@ -11,7 +11,7 @@ class Musixmatch extends Provider{
 
     private const URL = "https://apic-desktop.musixmatch.com/ws/1.1/macro.subtitles.get?format=json&q_track={title}&q_artist={artist}&user_language=en&f_subtitle_length=0&f_subtitle_length_max_deviation=0&subtitle_format=lrc&app_id=web-desktop-app-v1.0&guid=e08e6c63-edd1-4207-86dc-d350cdf7f4bc&usertoken=1710144894f79b194e5a5866d9e084d48f227d257dcd8438261277";
 
-    public function fetchLyrics(string $artist, string $title) : string{
+    public function fetchLyrics(string $artist, string $title) : ?string{
         $url = str_replace(["{title}", "{artist}"], [urlencode($title), urlencode($artist)], self::URL);
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);

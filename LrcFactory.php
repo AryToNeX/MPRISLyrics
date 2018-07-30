@@ -4,7 +4,7 @@ class LrcFactory{
 
     private $providers = array();
 
-    public function __construct($offlineHelper){
+    public function __construct(OfflineHelper $offlineHelper){
 
         // constitute informations of various providers
         $providersInfo = array();
@@ -37,7 +37,7 @@ class LrcFactory{
         }
     }
 
-    public function fetchLyrics($artist, $title){
+    public function fetchLyrics(string $artist, string $title) : ?string{
         foreach($this->providers as $provider){
             $response = $provider->fetchLyrics($artist, $title);
             if(isset($response)) return $response;

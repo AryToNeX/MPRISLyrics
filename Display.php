@@ -2,7 +2,7 @@
 
 class Display{
 
-    public static function displaySingleLine($position, $text, &$lastline){
+    public static function displaySingleLine(int $position, array $text, int &$lastline) : void{
         $line = LrcUtils::currentLine($text, $position);
         if($line == $lastline) return;
 
@@ -11,7 +11,7 @@ class Display{
         $lastline = $line;
     }
 
-    public static function displayWriteTextProcedurally($position, $text, &$lastline, &$lastposition){
+    public static function displayWriteTextProcedurally(int $position, array $text, int &$lastline, int &$lastposition) : void{
         $line = LrcUtils::currentLine($text, $position);
         if($line == $lastline) return;
 
@@ -21,7 +21,7 @@ class Display{
         $lastline = $line;
     }
 
-    public static function displayRows($position, $text, &$lastline, $rownum = 5){
+    public static function displayRows(int $position, array $text, int &$lastline, int $rownum = 5) : void{
         $line = LrcUtils::currentLine($text, $position);
         if($line == $lastline) return;
 

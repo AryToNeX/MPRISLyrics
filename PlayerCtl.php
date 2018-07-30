@@ -13,46 +13,46 @@ class PlayerCtl{
     private $binary;
     private $player;
     
-    public function __construct($player = null, $PATH = "/usr/bin"){
+    public function __construct(string $player = null, string $PATH = "/usr/bin"){
         $this->binary = $PATH . "/playerctl";
         if(isset($player)) $this->player = $player;
         else $this->player = $this->getPlayers()[0] ?? null;
     }
 
     /** @throws Exception */
-    public function getPosition(){
+    public function getPosition() : int{
         if(is_null($this->player)) throw new Exception("No music player was set!");
         return intval(exec($this->binary . " -p " . $this->player . " position 2>/dev/null")) ?? null;
     }
 
     /** @throws Exception */
-    public function getStatus(){
+    public function getStatus() : string{
         if(is_null($this->player)) throw new Exception("No music player was set!");
         return trim(strval(exec($this->binary . " -p " . $this->player . " status 2>/dev/null"))) ?? null;
     }
 
     /** @throws Exception */
-    public function getArtist(){
+    public function getArtist() : string{
         if(is_null($this->player)) throw new Exception("No music player was set!");
         return strval(exec($this->binary . " -p " . $this->player . " metadata artist 2>/dev/null")) ?? null;
     }
 
     /** @throws Exception */
-    public function getTitle(){
+    public function getTitle() : string{
         if(is_null($this->player)) throw new Exception("No music player was set!");
         return strval(exec($this->binary . " -p " . $this->player . " metadata title 2>/dev/null")) ?? null;
     }
 
-    public function getPlayers(){
+    public function getPlayers() : array{
         exec($this->binary . " -l 2>/dev/null", $output);
         return $output;
     }
 
-    public function getActivePlayer(){
+    public function getActivePlayer() : string{
         return $this->player;
     }
 
-    public function setActivePlayer($player){
+    public function setActivePlayer(string $player) : void{
         $this->player = $player;
     }
 }
