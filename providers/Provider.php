@@ -7,9 +7,9 @@ abstract class Provider{
     /** @var OfflineHelper $offlineHelper */
     protected $offlineHelper;
 
-    public function setOfflineHelper($offlineHelper){
+    public function setOfflineHelper(OfflineHelper $offlineHelper){
         $this->offlineHelper = $offlineHelper;
     }
 
-    abstract public function fetchLyrics($artist, $title);
+    abstract public function fetchLyrics(string $artist, string $title) : string;
 }

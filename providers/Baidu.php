@@ -7,7 +7,7 @@ class Baidu extends Provider{
     private const QUERY_URL = "http://tingapi.ting.baidu.com/v1/restserver/ting?from=qianqian&version=2.1.0&method=baidu.ting.search.merge&format=json&query={query}&page_no=1&page_size=5&type=-1&data_source=0&use_cluster=1";
     private const LYRICS_URL = "http://tingapi.ting.baidu.com/v1/restserver/ting?from=qianqian&version=2.1.0&method=baidu.ting.song.lry&format=json&songid={songid}";
 
-    public function fetchLyrics($artist, $title){
+    public function fetchLyrics(string $artist, string $title) : string{
         $query = $this->getSongQuery($artist, $title);
         if(isset($query) && !empty($query)){
             foreach ($query as $result){
@@ -24,7 +24,7 @@ class Baidu extends Provider{
         return null;
     }
 
-    private function getSongQuery($artist, $title){
+    private function getSongQuery(string $artist, string $title) : array{
         $url = str_replace("{query}", urlencode($title . " " . $artist), self::QUERY_URL);
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -34,7 +34,7 @@ class Baidu extends Provider{
         return json_decode($result, true)["song_info"]["song_list"] ?? null;
     }
 
-    private function getLyricsFromSongId($songId){
+    private function getLyricsFromSongId(string $songId) : string{
         $url = str_replace("{songid}", urlencode($songId), self::LYRICS_URL);
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
