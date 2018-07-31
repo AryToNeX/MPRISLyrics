@@ -7,10 +7,13 @@ _This screenshot is courtesy of @SantX27_
 
 ## Before you download
 
-Please note: I am not doing it seriously.
-I am only challenging myself here, and I wanted a lyrics visualizer that can run reliably on a terminal.
-That's all, don't spam me for ETAs or update requests. If you like the idea, you can always fork it and maintain it.
-I won't. When my interest in this project will be over, it will be over. There's no way around it.
+Please note: I am only challenging myself here, and I wanted a lyrics visualizer that can run on a terminal.
+
+Don't spam for ETAs (eg. for a certain lyrics provider) or update requests.
+
+If you like the idea you can always contribute to it (pull requests are VERY welcome), fork it and maintain it, rewrite it in another language.
+
+And finally, please note that when my interest in this project will be over, it will be over. There's no way around it, sadly.
 
 ## Prerequisites
 
