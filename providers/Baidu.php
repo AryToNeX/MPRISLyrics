@@ -2,7 +2,7 @@
 
 class Baidu extends Provider{
 
-    public const PROVIDER_PRIORITY = 1;
+    public const PROVIDER_PRIORITY = 10;
 
     private const QUERY_URL = "http://tingapi.ting.baidu.com/v1/restserver/ting?from=qianqian&version=2.1.0&method=baidu.ting.search.merge&format=json&query={query}&page_no=1&page_size=5&type=-1&data_source=0&use_cluster=1";
     private const LYRICS_URL = "http://tingapi.ting.baidu.com/v1/restserver/ting?from=qianqian&version=2.1.0&method=baidu.ting.song.lry&format=json&songid={songid}";
