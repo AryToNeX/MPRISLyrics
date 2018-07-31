@@ -2,6 +2,7 @@
 PoC that displays lyrics in sync with the currently playing song in a MPRIS capable player.
 
 ![Preview of the project](preview.jpg)
+
 _This screenshot is courtesy of @SantX27_
 
 ## Before you download
