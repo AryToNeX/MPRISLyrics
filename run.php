@@ -17,6 +17,20 @@
  * As always thanks to StackOverflow for this project.
  */
 
+// version check
+if(version_compare(PHP_VERSION, "7.1.0") < 0){
+    echo "Your PHP version is outdated, please install PHP >= 7.1.0 to use this program.\n";
+    exit(-1);
+}
+if(!function_exists("curl_version")){
+    echo "PHP cURL extension is not installed/enabled. You must have it installed and enabled to use this program.\n";
+    exit(-1);
+}
+if(exec("which playerctl 2> /dev/null") == ""){
+    echo "Playerctl is not installed on this system. Please install it to use this program.\n";
+    exit(-1);
+}
+
 // Handle Ctrl + C (SIGINT)
 pcntl_async_signals(true);
 pcntl_signal(SIGINT, function(){
@@ -45,14 +59,20 @@ $lastline = -1;
 $lastposition = 0;
 $isStopped = false;
 
-if(empty($player->getPlayers())){
-    echo "It seems that there are no MPRIS-capable music players opened. Exiting...\n";
-    exit(0);
-}
-
 // TODO: A method to calculate microseconds
 
 while(true){
+    if (empty($player->getPlayers())) {
+        echo "\033[2J\033[H";
+        echo "It seems that there are no MPRIS-capable music players opened. Waiting...\n";
+        while(empty($player->getPlayers())){
+            sleep(1); // delay polling of one second because we don't want to spam commands
+        };
+        echo "Found a player: " . $player->getPlayers()[0] . "\n";
+        $player->setActivePlayer($player->getPlayers()[0] ?? null);
+        sleep(1);
+    }
+
     try{
         if($player->getStatus() == "Stopped"){
             if(!$isStopped){
@@ -81,6 +101,10 @@ while(true){
     if(array_diff($newInfo, $oldInfo) !== array()){
         echo "\033[2J\033[H";
         echo "Now playing: " . $newInfo[0] . " - " . $newInfo[1] . "\n";
+        if($player->getActivePlayer() == "spotify"){
+            echo "WARNING: Spotify doesn't tell MPRIS2 the position of the track, so you'll experience static lyrics.\n";
+            echo "This issue must be fixed on Spotify itself and there's nothing MPRISLyrics can do to work around this.\n";
+        }
         echo "\n";
         $noLyrics = false;
         $text = LrcUtils::textArr($lrc->fetchLyrics($newInfo[0], $newInfo[1]));
