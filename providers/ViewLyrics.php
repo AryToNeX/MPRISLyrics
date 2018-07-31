@@ -2,13 +2,19 @@
 
 class ViewLyrics extends Provider{
 
-    public const PROVIDER_PRIORITY = 49;
+    public const PROVIDER_PRIORITY = 25;
     private const URL = "http://search.crintsoft.com/searchlyrics.htm";
     private const SERVER_URL = "http://minilyrics.com/";
     private const QUERY = "<?xml version='1.0' encoding='utf-8' standalone='yes' ?><searchV1 client=\"ViewLyricsOpenSearcher\" artist=\"{artist}\" title=\"{title}\" OnlyMatched=\"1\" />";
 
     public function fetchLyrics(string $artist, string $title) : ?string{
-        $ly = $this->queryViewLyrics($artist, $title)["fileinfo"];
+        $query = $this->queryViewLyrics($artist, $title);
+
+        if(!isset($query["fileinfo"])) return null;
+        $ly = $query["fileinfo"];
+
+        if(isset($ly["@attributes"])) $ly = array($ly); // ViewLyrics is strange, ok?
+
         foreach($ly as $item) {
             if(pathinfo($item["@attributes"]["link"], PATHINFO_EXTENSION) == "lrc") {
                 $lyrics = file_get_contents(self::SERVER_URL . $item["@attributes"]["link"]);
