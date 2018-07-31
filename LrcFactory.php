@@ -39,7 +39,9 @@ class LrcFactory{
 
     public function fetchLyrics(string $artist, string $title) : ?string{
         foreach($this->providers as $provider){
+            echo "Trying " . get_class($provider) . "...";
             $response = $provider->fetchLyrics($artist, $title);
+            echo "\033[2K\r";
             if(isset($response)) return $response;
         }
         return null;
