@@ -48,11 +48,11 @@ class PlayerCtl{
         return $output;
     }
 
-    public function getActivePlayer() : string{
+    public function getActivePlayer() : ?string{
         return $this->player;
     }
 
-    public function setActivePlayer(string $player) : void{
+    public function setActivePlayer(?string $player) : void{
         $this->player = $player;
     }
 }
