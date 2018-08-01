@@ -1,10 +1,5 @@
 <?php
 
-/**
- * This was a rewrite of the Musixmatch integration I found on BreadPlayer.
- * I don't even know how to fix this when it breaks, so as long as it works let's keep this, then switch to LyricWiki.
- */
-
 class Musixmatch extends Provider{
 
     public const PROVIDER_PRIORITY = 50;
@@ -12,6 +7,19 @@ class Musixmatch extends Provider{
     private const URL = "https://apic-desktop.musixmatch.com/ws/1.1/macro.subtitles.get?format=json&q_track={title}&q_artist={artist}&user_language=en&f_subtitle_length=0&f_subtitle_length_max_deviation=0&subtitle_format=lrc&app_id=web-desktop-app-v1.0&guid=e08e6c63-edd1-4207-86dc-d350cdf7f4bc&usertoken=1710144894f79b194e5a5866d9e084d48f227d257dcd8438261277";
 
     public function fetchLyrics(string $artist, string $title) : ?string{
+
+        $lyrics = $this->queryMusixmatch($artist, $title);
+
+        if(is_string($lyrics) && $lyrics !== ""){
+            if(isset($this->offlineHelper))
+                $this->offlineHelper->saveLyrics($artist, $title, $lyrics);
+            return $lyrics;
+        }
+
+        return null;
+    }
+
+    private function queryMusixmatch(string $artist, string $title) : ?string{
         $url = str_replace(["{title}", "{artist}"], [urlencode($title), urlencode($artist)], self::URL);
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -31,15 +39,7 @@ class Musixmatch extends Provider{
         $result = gzdecode(curl_exec($ch));
         curl_close($ch);
 
-        $lyrics = json_decode($result, true)["message"]["body"]["macro_calls"]["track.subtitles.get"]["message"]["body"]["subtitle_list"][0]["subtitle"]["subtitle_body"] ?? null;
-
-        if(is_string($lyrics) && $lyrics !== ""){
-            if(isset($this->offlineHelper))
-                $this->offlineHelper->saveLyrics($artist, $title, $lyrics);
-            return $lyrics;
-        }
-
-        return null;
+        return json_decode($result, true)["message"]["body"]["macro_calls"]["track.subtitles.get"]["message"]["body"]["subtitle_list"][0]["subtitle"]["subtitle_body"] ?? null;
     }
 
 }
