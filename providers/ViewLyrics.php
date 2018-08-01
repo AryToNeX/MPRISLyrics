@@ -31,7 +31,7 @@ class ViewLyrics extends Provider{
         return null;
     }
 
-    private function queryViewLyrics(string $artist, string $title) : ?array{
+    public function queryViewLyrics(string $artist, string $title) : ?array{
         $ch = curl_init(self::URL);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_USERAGENT, "MiniLyrics");
@@ -42,7 +42,7 @@ class ViewLyrics extends Provider{
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS,
             $this->encode(
-                str_replace(["{artist}", "{title}"], [$artist, $title], self::QUERY),
+                str_replace(["{artist}", "{title}"], [htmlentities($artist, ENT_QUOTES, 'UTF-8'), htmlentities($title, ENT_QUOTES, 'UTF-8')], self::QUERY),
                 "Mlv1clt4.0"
             )
         );
