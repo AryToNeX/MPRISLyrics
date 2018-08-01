@@ -39,7 +39,7 @@ pcntl_signal(SIGINT, function(){
 });
 
 include_once __DIR__ . "/Display.php";
-include_once __DIR__ . "/LrcUtils.php";
+include_once __DIR__ . "/Lyrics.php";
 include_once __DIR__ . "/LrcFactory.php";
 include_once __DIR__ . "/OfflineHelper.php";
 include_once __DIR__ . "/PlayerCtl.php";
@@ -107,11 +107,11 @@ while(true){
         }
         echo "\n";
         $noLyrics = false;
-        $text = LrcUtils::textArr($lrc->fetchLyrics($newInfo[0], $newInfo[1]));
+        $lyrics = $lrc->fetchLyrics($newInfo[0], $newInfo[1]);
         $oldInfo = $newInfo;
         $lastline = -1;
         $lastposition = 0;
-        if(!isset($text) || $text == ""){
+        if(!isset($lyrics)){
             echo "No lyrics | service unavailable.\n";
             $noLyrics = true;
         }
@@ -127,22 +127,22 @@ while(true){
     }
 
 
-    // CHOOSE ONE OF THE BROKEN DISPLAY METHODS
+    // CHOOSE ONE OF THE DISPLAY METHODS / TODO: SOON VIA CLI
 
     /*
      * This display method displays the current verse on a line, then keeps that line updated.
      */
-    //Display::displaySingleLine($position, $text, $lastline);
+    //Display::displaySingleLine($position, $lyrics, $lastline);
 
     /*
      * This display method prints the lyrics as the song keeps playing, outputting them line by line.
      */
-    //Display::displayWriteTextProcedurally($position, $text, $lastline, $lastposition);
+    //Display::displayWriteTextProcedurally($position, $lyrics, $lastline, $lastposition);
 
     /*
      * This display method prints X rows of lyrics, with the one in the center being in bold character format.
      */
-    Display::displayRows($position, $text, $lastline, 5);
+    Display::displayRows($position, $lyrics, $lastline, 5);
 
     $lastposition = $position;
 }
