@@ -31,7 +31,7 @@ class ViewLyrics extends Provider{
         return null;
     }
 
-    public function queryViewLyrics(string $artist, string $title) : ?array{
+    private function queryViewLyrics(string $artist, string $title) : ?array{
         $ch = curl_init(self::URL);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_USERAGENT, "MiniLyrics");
