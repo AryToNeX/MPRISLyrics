@@ -1,4 +1,4 @@
-# MPRISLyrics
+# MPRISLyrics [![ko-fi](https://www.ko-fi.com/img/donate_sm.png)](https://ko-fi.com/K3K3D0E0)
 PoC that displays lyrics in sync with the currently playing song in a MPRIS capable player.
 
 ![Preview of the project](preview.jpg)
