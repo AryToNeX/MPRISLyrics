@@ -33,6 +33,12 @@ class Lyrics{
     public function asArray(){
         return $this->lyrics;
     }
+
+    public function asPlainText(){
+        $str = "";
+        foreach($this->lyrics as $line) $str .= $line["verse"] . PHP_EOL;
+        return $str;
+    }
     
     private function sanitizeLrc(string $unsanitizedLrc) : string{
         // remove LRC tags
