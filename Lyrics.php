@@ -30,11 +30,11 @@ class Lyrics{
         return $line;
     }
 
-    public function asArray(){
+    public function asArray() : array{
         return $this->lyrics;
     }
 
-    public function asPlainText(){
+    public function asPlainText() : string{
         $str = "";
         foreach($this->lyrics as $line) $str .= $line["verse"] . PHP_EOL;
         return $str;
