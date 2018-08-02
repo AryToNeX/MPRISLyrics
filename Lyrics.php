@@ -72,12 +72,13 @@ class Lyrics{
         return implode("\n", $newly);
     }
 
-    private function parseLrc(string $formattedLrc) : void{
+    private function parseLrc(string $formattedLrc, bool $precise = false) : void{
         $formattedLrc = explode("\n", $formattedLrc);
         $parsedLrc = array();
         foreach($formattedLrc as $line){
             $time = explode(":", str_replace(".", ":", substr($line, 1, 8)));
-            $time = /*($time[2] / 100) + */ $time[1] + ($time[0] * 60);
+            if($precise) $time = ($time[2] / 100) + $time[1] + ($time[0] * 60);
+            else $time = $time[1] + ($time[0] * 60);
             $verse = trim(substr($line, 10));
             $parsedLrc[] = array("timestamp" => $time, "verse" => $verse);
         }
