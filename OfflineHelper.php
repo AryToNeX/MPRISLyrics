@@ -6,6 +6,7 @@ class OfflineHelper{
 
     public function __construct(string $workdir){
         $this->workdir = $workdir;
+        if(!is_dir($workdir)) mkdir($workdir);
     }
 
     public function checkLyrics(string $artist, string $title) : bool{
