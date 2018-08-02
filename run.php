@@ -2,11 +2,8 @@
 
 /*
  * One thing before you read this code:
- * I don't even know why this works. This was coded
- * at night from 11 PM to 5 AM and I was a lot confused and tired.
- *
- * Keep in mind I did this as a Proof of Concept, not as
- * a ready-made CLI lyrics displayer you can use out-of-the-box.
+ * I don't even know why this works. I am coding this
+ * night by night, till the end of August, I suppose.
  * 
  * There are bugs in the way the lyrics are displayed.
  * All these bugs are related to MPRIS not telling this
@@ -42,24 +39,63 @@ include_once __DIR__ . "/Display.php";
 include_once __DIR__ . "/Lyrics.php";
 include_once __DIR__ . "/LrcFactory.php";
 include_once __DIR__ . "/OfflineHelper.php";
+include_once __DIR__ . "/Options.php";
 include_once __DIR__ . "/PlayerCtl.php";
+include_once __DIR__ . "/Status.php";
 include_once __DIR__ . "/providers/Provider.php";
 include_once __DIR__ . "/providers/Musixmatch.php";
 include_once __DIR__ . "/providers/Baidu.php";
 include_once __DIR__ . "/providers/OfflineProvider.php";
 include_once __DIR__ . "/providers/ViewLyrics.php";
 
+$opts = new Options(array(
+    "d" => "required",
+    "h" => "novalue",
+    "l" => "required",
+    "o" => "required",
+    "p" => "required",
+    "r" => "required"
+));
+
+if($opts->getOption("h")){
+    echo "MPRISLyrics by AryToNeX - vINDEV
+USAGE: <MPRISLyricsPath> [-d mode] [-r number of rows]
+                         [-p player] [-l path] [-o ms]
+
+OPTION         VALUES
+    -d         singleline: displays the current verse on a line, then keeps that line
+                           updated.
+               linebyline: prints the lyrics as the song keeps playing, outputting
+                           them line by line.
+               rows:       prints N (usually 5) rows of lyrics, with the one in the
+                           center being in bold character format.
+    -l         Path where you want your lyrics to be saved. It can be relative to workdir
+               or absolute path.
+               Note: Lyrics will always be placed in a 'lyrics' subfolder in that path.
+    -o         Position offset in milliseconds (you can also use negative values).
+    -p         Name of the player that you want MPRISLyrics to listen to.
+               Note: this is helpful only if at startup there are more than one player
+               opened and MPRISLyrics defaults to the 'wrong' one.
+    -r         Number of rows in the 'row' display mode. If an even number is
+               provided, then 1 (one) is added to that number." . PHP_EOL;
+    exit(0);
+}
+
+if(!is_null($opts->getOption("o"))) $status->setOffset($opts->getOption("o"));
+
 $player = new PlayerCtl();
-$lrc = new LrcFactory(new OfflineHelper(__DIR__)); // TODO: Custom lyrics path
+if(($p = $opts->getOption("p")) !== null){
+    foreach($player->getPlayers() as $pl){
+        if($pl == $p){
+            $player->setActivePlayer($pl);
+            break;
+        }
+    }
+}
 
-$oldInfo = array(null, null);
-$text = null;
-$noLyrics = false;
-$lastline = -1;
-$lastposition = 0;
-$isStopped = false;
-
-// TODO: A method to calculate microseconds
+$lrc = new LrcFactory(new OfflineHelper($opts->getOption("l") ?? getcwd()));
+$status = new Status();
+$status->setStopped(false);
 
 while(true){
     if (empty($player->getPlayers())) {
@@ -75,14 +111,14 @@ while(true){
 
     try{
         if($player->getStatus() == "Stopped"){
-            if(!$isStopped){
+            if(!$status->isStopped()){
                 echo "\033[2J\033[H";
                 echo "Music player is stopped; please play some music.\n";
             }
-            $isStopped = true;
+            $status->setStopped(true);
             continue;
         }else{
-            $isStopped = false;
+            $status->setStopped(false);
         }
     }catch (Exception $e){
         // why would this happen? anyway here's some dumb code
@@ -98,51 +134,47 @@ while(true){
         continue;
     }
 
-    if(array_diff($newInfo, $oldInfo) !== array()){
+    if(array_diff($newInfo, array($status->getArtist(), $status->getTitle())) !== array()){
         echo "\033[2J\033[H";
         echo "Now playing: " . $newInfo[0] . " - " . $newInfo[1] . "\n";
         if($player->getActivePlayer() == "spotify"){
             echo "WARNING: Spotify doesn't tell MPRIS2 the position of the track, so you'll experience static lyrics.\n";
             echo "This issue must be fixed on Spotify itself and there's nothing MPRISLyrics can do to work around this.\n";
-        }
+        } // TODO: Write a proper warning handler for unsupported / partly supported players
         echo "\n";
-        $noLyrics = false;
-        $lyrics = $lrc->fetchLyrics($newInfo[0], $newInfo[1]);
-        $oldInfo = $newInfo;
-        $lastline = -1;
-        $lastposition = 0;
-        if(!isset($lyrics)){
+        $status->setLyrics($lrc->fetchLyrics($newInfo[0], $newInfo[1]));
+        $status->setTrackInfo($newInfo[0], $newInfo[1]);
+        $status->setLastLinePosition(-1);
+        $status->setLastPosition(0);
+        if(is_null($status->getLyrics()))
             echo "No lyrics | service unavailable.\n";
-            $noLyrics = true;
-        }
     }
-    if($noLyrics) continue;
+    if(is_null($status->getLyrics())) continue;
 
     try {
         $position = $player->getPosition();
+        $position += $status->getOffset();
     }catch (Exception $e){
         // why would this happen? anyway here's some dumb code
         $player->setActivePlayer($player->getPlayers()[0] ?? null);
         continue;
     }
 
+    switch($opts->getOption("d")){
+        case "singleline":
+            // This display method displays the current verse on a line, then keeps that line updated.
+            Display::displaySingleLine($position, $status);
+            break;
+        case "linebyline":
+            // This display method prints the lyrics as the song keeps playing, outputting them line by line.
+            Display::displayWriteTextProcedurally($position, $status);
+            break;
+        case "rows":
+        default:
+            // This display method prints X rows of lyrics, with the one in the center being in bold character format.
+            Display::displayRows($position, $status, $opts->getOption("r") ?? 5);
+            break;
+    }
 
-    // CHOOSE ONE OF THE DISPLAY METHODS / TODO: SOON VIA CLI
-
-    /*
-     * This display method displays the current verse on a line, then keeps that line updated.
-     */
-    //Display::displaySingleLine($position, $lyrics, $lastline);
-
-    /*
-     * This display method prints the lyrics as the song keeps playing, outputting them line by line.
-     */
-    //Display::displayWriteTextProcedurally($position, $lyrics, $lastline, $lastposition);
-
-    /*
-     * This display method prints X rows of lyrics, with the one in the center being in bold character format.
-     */
-    Display::displayRows($position, $lyrics, $lastline, 5);
-
-    $lastposition = $position;
+    $status->setLastPosition($position);
 }

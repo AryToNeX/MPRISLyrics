@@ -2,31 +2,31 @@
 
 class Display{
 
-    public static function displaySingleLine(int $position, Lyrics $lyrics, int &$lastline) : void{
-        $line = $lyrics->getLineVerseAt($position);
-        $linepos = $lyrics->getLineIndexAt($position);
-        if($line == $lastline) return;
+    public static function displaySingleLine(int $position, Status $status) : void{
+        $line = $status->getLyrics()->getLineVerseAt($position);
+        $linepos = $status->getLyrics()->getLineIndexAt($position);
+        if($linepos == $status->getLastLinePosition()) return;
 
         echo "\033[2K\r";
         echo $line;
-        $lastline = $linepos;
+        $status->setLastLinePosition($linepos);
     }
 
-    public static function displayWriteTextProcedurally(int $position, Lyrics $lyrics, int &$lastline, int &$lastposition) : void{
-        $line = $lyrics->getLineVerseAt($position);
-        $linepos = $lyrics->getLineIndexAt($position);
-        if($linepos == $lastline) return;
+    public static function displayWriteTextProcedurally(int $position, Status $status) : void{
+        $line = $status->getLyrics()->getLineVerseAt($position);
+        $linepos = $status->getLyrics()->getLineIndexAt($position);
+        if($linepos == $status->getLastLinePosition()) return;
 
-        if($position < $lastposition) echo "\n----------\n\n"; // if you go backwards in the track, output lyrics break
+        if($position < $status->getLastPosition()) echo "\n----------\n\n"; // if you go backwards in the track, output lyrics break
 
         echo $line . "\n";
-        $lastline = $linepos;
+        $status->setLastLinePosition($linepos);
     }
 
-    public static function displayRows(int $position, Lyrics $lyrics, int &$lastline, int $rownum = 5) : void{
-        $text = $lyrics->asArray();
-        $linepos = $lyrics->getLineIndexAt($position);
-        if($linepos == $lastline) return;
+    public static function displayRows(int $position, Status $status, int $rownum = 5) : void{
+        $text = $status->getLyrics()->asArray();
+        $linepos = $status->getLyrics()->getLineIndexAt($position);
+        if($linepos == $status->getLastLinePosition()) return;
 
         if($rownum % 2 == 0) $rownum++; // if it's even add 1 so we have an odd number of total lines
         $rowsontop = ($rownum - 1) / 2; // we need to calculate rows on top of the center row, so we subtract 1 and then divide by 2
@@ -45,7 +45,7 @@ class Display{
         }
         echo "\033[" . $rownum . "A"; // Set cursor up again
 
-        $lastline = $linepos;
+        $status->setLastLinePosition($linepos);
     }
 
 }

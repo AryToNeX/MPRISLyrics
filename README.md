@@ -27,6 +27,7 @@ You will also need PHP (>= 7.1) and cURL extension for PHP (php-curl)
 ```
 git clone https://github.com/AryToNeX/MPRISLyrics
 cd MPRISLyrics
+php run.php -h # for the help message
 php run.php
 ```
 
