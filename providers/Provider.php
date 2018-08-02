@@ -7,7 +7,7 @@ abstract class Provider{
     /** @var OfflineHelper $offlineHelper */
     protected $offlineHelper;
 
-    public function setOfflineHelper(OfflineHelper $offlineHelper){
+    public function setOfflineHelper(OfflineHelper $offlineHelper) : void{
         $this->offlineHelper = $offlineHelper;
     }
 
