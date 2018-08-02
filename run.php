@@ -81,8 +81,6 @@ OPTION         VALUES
     exit(0);
 }
 
-if(!is_null($opts->getOption("o"))) $status->setOffset($opts->getOption("o"));
-
 $player = new PlayerCtl();
 if(($p = $opts->getOption("p")) !== null){
     foreach($player->getPlayers() as $pl){
@@ -96,6 +94,11 @@ if(($p = $opts->getOption("p")) !== null){
 $lrc = new LrcFactory(new OfflineHelper($opts->getOption("l") ?? getcwd()));
 $status = new Status();
 $status->setStopped(false);
+
+if(!is_null($opts->getOption("o"))){
+    echo floatval($opts->getOption("o"));
+    $status->setOffset(floatval($opts->getOption("o")));
+}
 
 while(true){
     if (empty($player->getPlayers())) {
