@@ -1,5 +1,7 @@
 <?php
 
+namespace AryToNeX\MPRISLyrics;
+
 class Lyrics{
     
     private $lyrics = array();

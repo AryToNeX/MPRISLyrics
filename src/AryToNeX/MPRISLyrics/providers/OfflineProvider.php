@@ -1,5 +1,7 @@
 <?php
 
+namespace AryToNeX\MPRISLyrics\providers;
+
 class OfflineProvider extends Provider{
 
     public const PROVIDER_PRIORITY = 100;

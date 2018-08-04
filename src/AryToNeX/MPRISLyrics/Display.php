@@ -1,5 +1,7 @@
 <?php
 
+namespace AryToNeX\MPRISLyrics;
+
 class Display{
 
     public static function displaySingleLine(int $position, Status $status) : void{

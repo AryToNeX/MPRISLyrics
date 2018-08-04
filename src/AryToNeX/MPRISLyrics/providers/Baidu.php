@@ -1,5 +1,7 @@
 <?php
 
+namespace AryToNeX\MPRISLyrics\providers;
+
 class Baidu extends Provider{
 
     public const PROVIDER_PRIORITY = 10;

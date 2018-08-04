@@ -14,6 +14,14 @@
  * As always thanks to StackOverflow for this project.
  */
 
+use AryToNeX\MPRISLyrics\Display;
+use AryToNeX\MPRISLyrics\LrcFactory;
+use AryToNeX\MPRISLyrics\OfflineHelper;
+use AryToNeX\MPRISLyrics\Options;
+use AryToNeX\MPRISLyrics\PlayerCtl;
+use AryToNeX\MPRISLyrics\Status;
+use AryToNeX\MPRISLyrics\Versioning;
+
 // version check
 if(version_compare(PHP_VERSION, "7.1.0") < 0){
     echo "Your PHP version is outdated, please install PHP >= 7.1.0 to use this program.\n";
@@ -35,19 +43,6 @@ pcntl_signal(SIGINT, function(){
     exit(0);
 });
 
-include_once __DIR__ . "/Display.php";
-include_once __DIR__ . "/Lyrics.php";
-include_once __DIR__ . "/LrcFactory.php";
-include_once __DIR__ . "/OfflineHelper.php";
-include_once __DIR__ . "/Options.php";
-include_once __DIR__ . "/PlayerCtl.php";
-include_once __DIR__ . "/Status.php";
-include_once __DIR__ . "/providers/Provider.php";
-include_once __DIR__ . "/providers/Musixmatch.php";
-include_once __DIR__ . "/providers/Baidu.php";
-include_once __DIR__ . "/providers/OfflineProvider.php";
-include_once __DIR__ . "/providers/ViewLyrics.php";
-
 $opts = new Options(array(
     "d" => "required",
     "h" => "novalue",
@@ -58,7 +53,7 @@ $opts = new Options(array(
 ));
 
 if($opts->getOption("h")){
-    echo "MPRISLyrics by AryToNeX - vINDEV
+    echo "MPRISLyrics by AryToNeX - version ".Versioning::getVersion()."
 USAGE: <MPRISLyricsPath> [-d mode] [-r number of rows]
                          [-p player] [-l path] [-o ms]
 

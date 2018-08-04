@@ -1,5 +1,7 @@
 <?php
 
+namespace AryToNeX\MPRISLyrics;
+
 /*
  * TODO: Use native dbus-send
  * This means we have to parse Variant
@@ -19,27 +21,27 @@ class PlayerCtl{
         else $this->player = $this->getPlayers()[0] ?? null;
     }
 
-    /** @throws Exception */
+    /** @throws \Exception */
     public function getPosition() : ?int{
-        if(is_null($this->player)) throw new Exception("No music player was set!");
+        if(is_null($this->player)) throw new \Exception("No music player was set!");
         return intval(exec($this->binary . " -p " . $this->player . " position 2>/dev/null")) ?? null;
     }
 
-    /** @throws Exception */
+    /** @throws \Exception */
     public function getStatus() : ?string{
-        if(is_null($this->player)) throw new Exception("No music player was set!");
+        if(is_null($this->player)) throw new \Exception("No music player was set!");
         return trim(strval(exec($this->binary . " -p " . $this->player . " status 2>/dev/null"))) ?? null;
     }
 
-    /** @throws Exception */
+    /** @throws \Exception */
     public function getArtist() : ?string{
-        if(is_null($this->player)) throw new Exception("No music player was set!");
+        if(is_null($this->player)) throw new \Exception("No music player was set!");
         return strval(exec($this->binary . " -p " . $this->player . " metadata artist 2>/dev/null")) ?? null;
     }
 
-    /** @throws Exception */
+    /** @throws \Exception */
     public function getTitle() : ?string{
-        if(is_null($this->player)) throw new Exception("No music player was set!");
+        if(is_null($this->player)) throw new \Exception("No music player was set!");
         return strval(exec($this->binary . " -p " . $this->player . " metadata title 2>/dev/null")) ?? null;
     }
 

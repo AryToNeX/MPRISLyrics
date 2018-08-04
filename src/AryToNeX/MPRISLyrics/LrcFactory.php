@@ -1,28 +1,29 @@
 <?php
 
+namespace AryToNeX\MPRISLyrics;
+
 class LrcFactory{
 
     private $providers = array();
 
     public function __construct(OfflineHelper $offlineHelper){
-
-        // constitute informations of various providers
+        // constitute information of various providers
         $providersInfo = array();
-        foreach(glob("providers/*.php") as $providerClass){
+        foreach(scandir(__DIR__ . "/providers/") as $providerClass){
             $className = pathinfo($providerClass, PATHINFO_FILENAME);
             try {
-                $isAbstract = (new ReflectionClass($className))->isAbstract();
-            } catch (ReflectionException $e){
-                $isAbstract = true; // we don't know so we assume it's abstract for security purposes
+                $reflectionClass = new \ReflectionClass("AryToNeX\MPRISLyrics\providers\\" . $className);
+            } catch (\ReflectionException $e){
+                continue;
             }
             $providersInfo[] = array(
-                "name" => $className,
-                "priority" => constant("$className::PROVIDER_PRIORITY"),
-                "is_abstract" => $isAbstract
+                "name" => "AryToNeX\MPRISLyrics\providers\\" . $className,
+                "priority" => $reflectionClass->getConstant("PROVIDER_PRIORITY"),
+                "is_abstract" => $reflectionClass->isAbstract()
             );
         }
 
-        // sort informations by priority
+        // sort information by priority
         usort($providersInfo, function ($item1, $item2) {
             return $item2['priority'] <=> $item1['priority'];
         });
@@ -39,7 +40,9 @@ class LrcFactory{
 
     public function fetchLyrics(string $artist, string $title) : ?Lyrics{
         foreach($this->providers as $provider){
-            echo "Trying " . get_class($provider) . "...";
+            $name = get_class($provider);
+            $name = ( ($pos = strrpos($name, "\\")) ? substr($name, $pos + 1) : $pos );
+            echo "Trying " . $name . "...";
             $response = $provider->fetchLyrics($artist, $title);
             echo "\033[2K\r";
             if(isset($response) && $response !== ""){

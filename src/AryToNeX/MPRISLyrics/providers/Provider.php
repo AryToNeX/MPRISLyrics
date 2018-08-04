@@ -1,5 +1,9 @@
 <?php
 
+namespace AryToNeX\MPRISLyrics\providers;
+
+use AryToNeX\MPRISLyrics\OfflineHelper;
+
 abstract class Provider{
 
     public const PROVIDER_PRIORITY = 1;

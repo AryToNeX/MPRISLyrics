@@ -1,5 +1,7 @@
 <?php
 
+namespace AryToNeX\MPRISLyrics\providers;
+
 class ViewLyrics extends Provider{
 
     public const PROVIDER_PRIORITY = 25;
@@ -49,7 +51,7 @@ class ViewLyrics extends Provider{
         $result = curl_exec($ch);
         curl_close($ch);
 
-        if(isset($result)) return json_decode(json_encode(new SimpleXMLElement($this->decode($result))), true);
+        if(isset($result)) return json_decode(json_encode(new \SimpleXMLElement($this->decode($result))), true);
         return null;
     }
 
