@@ -8,6 +8,7 @@ include_once __DIR__ . "/OfflineHelper.php";
 include_once __DIR__ . "/Options.php";
 include_once __DIR__ . "/PlayerCtl.php";
 include_once __DIR__ . "/Status.php";
+include_once __DIR__ . "/Versioning.php";
 include_once __DIR__ . "/providers/Provider.php";
 include_once __DIR__ . "/providers/Musixmatch.php";
 include_once __DIR__ . "/providers/Baidu.php";
