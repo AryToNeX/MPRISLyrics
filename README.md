@@ -1,5 +1,5 @@
 # MPRISLyrics [![ko-fi](https://www.ko-fi.com/img/donate_sm.png)](https://ko-fi.com/K3K3D0E0)
-PoC that displays lyrics in sync with the currently playing song in a MPRIS capable player.
+Small command-line utility that displays lyrics in sync with the currently playing song in a MPRIS2 capable player.
 
 ![Preview of the project](preview.jpg)
 
@@ -24,11 +24,20 @@ You will also need PHP (>= 7.1) and cURL extension for PHP (php-curl)
 
 ## Using the project
 
+### Using a packaged build (recommended)
+```
+mkdir MPRISLyrics && cd MPRISLyrics
+wget https://github.com/AryToNeX/MPRISLyrics/releases/download/1.0.0-beta1/MPRISLyrics-1.0.0-beta1.phar -o MPRISLyrics.phar
+wget https://github.com/AryToNeX/MPRISLyrics/raw/1.0.0-beta1/start.sh -o start.sh
+chmod +x start.sh # if you encounter problems running the start script
+./start.sh
+```
+### From source
 ```
 git clone https://github.com/AryToNeX/MPRISLyrics
 cd MPRISLyrics
-php run.php -h # for the help message
-php run.php
+chmod +x start.sh # if you encounter problems running the start script
+./start.sh
 ```
 
 ## Apache 2.0 License
