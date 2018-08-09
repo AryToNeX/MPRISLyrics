@@ -46,7 +46,9 @@ class Lyrics{
         // remove LRC tags
         $unsanitizedLrc = trim(preg_replace(["(\[id:.*\])", "(\[ti:.*\])", "(\[ar:.*\])", "(\[au:.*\])", "(\[al:.*\])", "(\[re:.*\])", "(\[ve:.*\])", "(\[by:.*\])", "(\[length:.*\])", "(\[offset:.*\])"], "", $unsanitizedLrc));
         // remove enhanced LRC format
-        $unsanitizedLrc = preg_replace("(<\d{2}:\d{2}\.\d{2}>)", "", $unsanitizedLrc);
+        $unsanitizedLrc = preg_replace(array("(<\d{2}:\d{2}\.\d{2}>)", "(<\d{2}:\d{2}>)"), "", $unsanitizedLrc);
+        // extend compressed time tags (ex. [01:30] becomes [01:30.00])
+        $unsanitizedLrc = preg_replace("/\[(\d{2}):(\d{2})\]/", "[$1:$2.00]", $unsanitizedLrc);
         // extend compressed LRC (ex. [00:02.30][00:30.45]Same verse repeated two times in a song )
         $unsanitizedLrc = explode("\n", $unsanitizedLrc);
         $newly = array();
