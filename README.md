@@ -24,6 +24,9 @@ You will also need PHP (>= 7.1) and cURL extension for PHP (php-curl)
 
 ## Using the project
 
+#### Before using MPRISLyrics, please check if your music player is listed and supported: [click here](https://github.com/AryToNeX/MPRISLyrics/blob/master/COMPATIBILITY.md) 
+##### If you don't find your music player you can still test if it works and then make a PR to include it in the compatibility sheet.
+
 ### Using a packaged build (recommended)
 ```
 mkdir MPRISLyrics && cd MPRISLyrics
