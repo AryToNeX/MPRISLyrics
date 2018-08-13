@@ -30,7 +30,7 @@ You will also need PHP (>= 7.1) and cURL extension for PHP (php-curl)
 ### Using a packaged build (recommended)
 ```
 mkdir MPRISLyrics && cd MPRISLyrics
-wget https://github.com/AryToNeX/MPRISLyrics/releases/download/1.0.0-beta2/MPRISLyrics-1.0.0-beta1.phar -o MPRISLyrics.phar
+wget https://github.com/AryToNeX/MPRISLyrics/releases/download/1.0.0-beta2/MPRISLyrics-1.0.0-beta2.phar -o MPRISLyrics.phar
 wget https://github.com/AryToNeX/MPRISLyrics/raw/1.0.0-beta2/start.sh -o start.sh
 chmod +x start.sh # if you encounter problems running the start script
 ./start.sh
