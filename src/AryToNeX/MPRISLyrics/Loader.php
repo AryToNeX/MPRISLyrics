@@ -1,19 +1,17 @@
 <?php
 
 // include libs
-include_once __DIR__ . "/Display.php";
-include_once __DIR__ . "/Lyrics.php";
-include_once __DIR__ . "/LrcFactory.php";
-include_once __DIR__ . "/OfflineHelper.php";
-include_once __DIR__ . "/Options.php";
-include_once __DIR__ . "/PlayerCtl.php";
-include_once __DIR__ . "/Status.php";
-include_once __DIR__ . "/Versioning.php";
-include_once __DIR__ . "/providers/Provider.php";
-include_once __DIR__ . "/providers/Musixmatch.php";
-include_once __DIR__ . "/providers/Baidu.php";
-include_once __DIR__ . "/providers/OfflineProvider.php";
-include_once __DIR__ . "/providers/ViewLyrics.php";
+foreach(scandir(__DIR__) as $file)
+    if(pathinfo($file, PATHINFO_EXTENSION) == "php" && $file !== "MPRISLyrics.php")
+        require_once __DIR__ . "/" . $file;
+
+// include abstract provider class
+require_once __DIR__ . "/providers/Provider.php";
+
+// include providers
+foreach(scandir(__DIR__ . "/providers") as $file)
+    if(pathinfo($file, PATHINFO_EXTENSION) == "php" && $file !== "Provider.php")
+        require_once __DIR__ . "/providers/" .  $file;
 
 // include main
 include_once __DIR__ . "/MPRISLyrics.php";
