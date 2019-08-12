@@ -120,7 +120,7 @@ while(true){
         echo "It seems that there are no MPRIS-capable music players opened. Waiting...\n";
         while(empty($player->getPlayers())){
             sleep(1); // delay polling of one second because we don't want to spam commands
-        };
+        }
         echo "Found a player: " . $player->getPlayers()[0] . "\n";
         $player->setActivePlayer($player->getPlayers()[0] ?? null);
         $status->setPlayer($player->getPlayers()[0] ?? null);
@@ -132,9 +132,22 @@ while(true){
             if(!$status->isStopped()){
                 echo "\033[2J\033[H";
                 echo "Music player is stopped; please play some music.\n";
+                $status->setStopped(true);
             }
-            $status->setStopped(true);
             continue;
+        }elseif($player->getStatus() == "No players found"){
+            $status->setStopped(true);
+            if (empty($player->getPlayers())) {
+                echo "\033[2J\033[H";
+                echo "It seems that there are no MPRIS-capable music players opened. Waiting...\n";
+                while(empty($player->getPlayers())){
+                    sleep(1); // delay polling of one second because we don't want to spam commands
+                }
+                echo "Found a player: " . $player->getPlayers()[0] . "\n";
+                $player->setActivePlayer($player->getPlayers()[0] ?? null);
+                $status->setPlayer($player->getPlayers()[0] ?? null);
+                sleep(1);
+            }
         }else{
             $status->setStopped(false);
         }
