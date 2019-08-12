@@ -22,6 +22,7 @@ use AryToNeX\MPRISLyrics\PlayerCtl;
 use AryToNeX\MPRISLyrics\PrecisionPlayers;
 use AryToNeX\MPRISLyrics\Status;
 use AryToNeX\MPRISLyrics\Versioning;
+use AryToNeX\MPRISLyrics\Utils;
 
 // version check
 if(version_compare(PHP_VERSION, "7.1.0") < 0){
@@ -111,6 +112,9 @@ if(!is_null($opts->getOption("o"))){
 }
 
 while(true){
+    // calculate terminal width
+    $twidth = intval(exec("tput cols"));
+
     if (empty($player->getPlayers())) {
         echo "\033[2J\033[H";
         echo "It seems that there are no MPRIS-capable music players opened. Waiting...\n";
@@ -152,18 +156,18 @@ while(true){
 
     if(array_diff($newInfo, array($status->getArtist(), $status->getTitle())) !== array()){
         echo "\033[2J\033[H";
-        echo "Now playing on " . $status->getPlayer() . ": " . $newInfo[0] . " - " . $newInfo[1] . "\n";
         if($status->getPlayer() == "spotify"){
             echo "WARNING: Spotify doesn't tell MPRIS2 the position of the track, so you'll experience static lyrics.\n";
             echo "This issue must be fixed on Spotify itself and there's nothing MPRISLyrics can do to work around this.\n";
         } // TODO: Write a proper warning handler for unsupported / partly supported players
+        echo Utils::ellipsis("Now playing on " . $status->getPlayer() . ": " . $newInfo[0] . " - " . $newInfo[1], $twidth-1) . "\n";
         echo "\n";
         $status->setLyrics($lrc->fetchLyrics($newInfo[0], $newInfo[1], $precision->isPrecisionPlayer($status->getPlayer())));
         $status->setTrackInfo($newInfo[0], $newInfo[1]);
         $status->setLastLinePosition(-1);
         $status->setLastPosition(0);
         if(is_null($status->getLyrics()))
-            echo "No lyrics | service unavailable.\n";
+            echo Utils::ellipsis("No lyrics | service unavailable.", $twidth-1) . "\n";
     }
     if(is_null($status->getLyrics())) continue;
 
@@ -180,7 +184,7 @@ while(true){
     switch($opts->getOption("d")){
         case "singleline":
             // This display method displays the current verse on a line, then keeps that line updated.
-            Display::displaySingleLine($position, $status);
+            Display::displaySingleLine($position, $twidth, $status);
             break;
         case "linebyline":
             // This display method prints the lyrics as the song keeps playing, outputting them line by line.
@@ -189,7 +193,7 @@ while(true){
         case "rows":
         default:
             // This display method prints X rows of lyrics, with the one in the center being in bold character format.
-            Display::displayRows($position, $status, $opts->getOption("r") ?? 5);
+            Display::displayRows($position, $twidth, $status, $opts->getOption("r") ?? 5);
             break;
     }
 

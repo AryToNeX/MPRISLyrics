@@ -23,5 +23,10 @@ class Utils{
         
         return null;
     }
+    
+    public static function ellipsis(string $text, int $maxdimens): string{
+        $str = substr($text, 0, $maxdimens-1);
+        return $str . (strlen($str) < strlen($text) ? "…" : "");
+    }
 
 }

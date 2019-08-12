@@ -20,9 +20,9 @@ class PlayerCtl{
     }
 
     /** @throws \Exception */
-    public function getPosition() : ?int{
+    public function getPosition() : ?float{
         if(is_null($this->player)) throw new \Exception("No music player was set!");
-        return intval(exec($this->binary . " -p " . $this->player . " position 2>/dev/null")) ?? null;
+        return floatval(exec($this->binary . " -p " . $this->player . " position 2>/dev/null")) ?? null;
     }
 
     /** @throws \Exception */

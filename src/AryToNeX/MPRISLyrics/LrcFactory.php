@@ -42,7 +42,7 @@ class LrcFactory{
         foreach($this->providers as $provider){
             $name = get_class($provider);
             $name = ( ($pos = strrpos($name, "\\")) ? substr($name, $pos + 1) : $pos );
-            echo "Trying " . $name . "...";
+            echo Utils::ellipsis("Trying " . $name, intval(exec("tput cols")));
             $response = $provider->fetchLyrics($artist, $title);
             echo "\033[2K\r";
             if(isset($response) && $response !== ""){

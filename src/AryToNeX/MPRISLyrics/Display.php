@@ -2,15 +2,17 @@
 
 namespace AryToNeX\MPRISLyrics;
 
+use AryToNeX\MPRISLyrics\Utils;
+
 class Display{
 
-    public static function displaySingleLine(int $position, Status $status) : void{
+    public static function displaySingleLine(int $position, int $maxdimens, Status $status) : void{
         $line = $status->getLyrics()->getLineVerseAt($position);
         $linepos = $status->getLyrics()->getLineIndexAt($position);
         if($linepos == $status->getLastLinePosition()) return;
 
         echo "\033[2K\r";
-        echo $line;
+        echo Utils::ellipsis($line, $maxdimens-1);
         $status->setLastLinePosition($linepos);
     }
 
@@ -25,7 +27,7 @@ class Display{
         $status->setLastLinePosition($linepos);
     }
 
-    public static function displayRows(int $position, Status $status, int $rownum = 5) : void{
+    public static function displayRows(int $position, int $maxdimens, Status $status, int $rownum = 5) : void{
         $text = $status->getLyrics()->asArray();
         $linepos = $status->getLyrics()->getLineIndexAt($position);
         if($linepos == $status->getLastLinePosition()) return;
@@ -41,9 +43,9 @@ class Display{
         echo "\033[0G"; // Set cursor to first column
         for($i = $rowsontop * -1; $i <= $rowsontop; $i++) {
             if($i === 0)
-                echo ($linepos) < 0 || ($linepos) >= count($text) ? "\n" : "\033[1m" . $text[$linepos]["verse"]."\033[0m\n";
+                echo ($linepos) < 0 || ($linepos) >= count($text) ? "\n" : "\033[1m" . Utils::ellipsis($text[$linepos]["verse"], $maxdimens-1)."\033[0m\n";
             else
-                echo ($linepos + $i) < 0 || ($linepos + $i) >= count($text) ? "\n" : $text[$linepos + $i]["verse"] . "\n";
+                echo ($linepos + $i) < 0 || ($linepos + $i) >= count($text) ? "\n" : Utils::ellipsis($text[$linepos + $i]["verse"], $maxdimens-1) . "\n";
         }
         echo "\033[" . $rownum . "A"; // Set cursor up again
 
