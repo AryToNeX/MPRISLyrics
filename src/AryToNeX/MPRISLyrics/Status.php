@@ -4,6 +4,7 @@ namespace AryToNeX\MPRISLyrics;
 
 class Status{
 
+    private $player;
     private $artist;
     private $title;
     private $lyrics;
@@ -12,6 +13,14 @@ class Status{
     private $offset;
     private $isStopped;
 
+    public function setPlayer(?string $player) : void{
+        $this->player = $player;
+    }
+    
+    public function getPlayer() : ?string{
+        return $this->player;
+    }
+    
     public function setTrackInfo(string $artist, string $title) : void{
         $this->setArtist($artist);
         $this->setTitle($title);

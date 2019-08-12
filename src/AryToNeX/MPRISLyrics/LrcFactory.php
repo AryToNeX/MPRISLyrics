@@ -38,7 +38,7 @@ class LrcFactory{
         }
     }
 
-    public function fetchLyrics(string $artist, string $title) : ?Lyrics{
+    public function fetchLyrics(string $artist, string $title, bool $accurateTiming = false) : ?Lyrics{
         foreach($this->providers as $provider){
             $name = get_class($provider);
             $name = ( ($pos = strrpos($name, "\\")) ? substr($name, $pos + 1) : $pos );
@@ -46,7 +46,7 @@ class LrcFactory{
             $response = $provider->fetchLyrics($artist, $title);
             echo "\033[2K\r";
             if(isset($response) && $response !== ""){
-                $lyrics = new Lyrics($response);
+                $lyrics = new Lyrics($response, $accurateTiming);
                 return $lyrics;
             }
         }

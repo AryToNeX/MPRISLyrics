@@ -3,6 +3,7 @@
 include_once "src/AryToNeX/MPRISLyrics/Versioning.php";
 $srcRoot = "src/";
 $buildRoot = "build/";
+@mkdir("build/");
 $fileName = "MPRISLyrics-" . \AryToNeX\MPRISLyrics\Versioning::getVersion() . ".phar";
 $phar = new Phar($buildRoot . $fileName, null, $fileName);
 $phar->buildFromDirectory($srcRoot,'/.php$/');

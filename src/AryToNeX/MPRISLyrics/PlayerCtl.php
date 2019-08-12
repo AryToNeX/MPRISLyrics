@@ -15,10 +15,8 @@ class PlayerCtl{
     private $binary;
     private $player;
     
-    public function __construct(string $player = null, string $PATH = "/usr/bin"){
+    public function __construct(string $PATH = "/usr/bin"){
         $this->binary = $PATH . "/playerctl";
-        if(isset($player)) $this->player = $player;
-        else $this->player = $this->getPlayers()[0] ?? null;
     }
 
     /** @throws \Exception */

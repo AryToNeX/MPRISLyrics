@@ -19,6 +19,7 @@ use AryToNeX\MPRISLyrics\LrcFactory;
 use AryToNeX\MPRISLyrics\OfflineHelper;
 use AryToNeX\MPRISLyrics\Options;
 use AryToNeX\MPRISLyrics\PlayerCtl;
+use AryToNeX\MPRISLyrics\PrecisionPlayers;
 use AryToNeX\MPRISLyrics\Status;
 use AryToNeX\MPRISLyrics\Versioning;
 
@@ -29,6 +30,14 @@ if(version_compare(PHP_VERSION, "7.1.0") < 0){
 }
 if(!function_exists("curl_version")){
     echo "PHP cURL extension is not installed/enabled. You must have it installed and enabled to use this program.\n";
+    exit(-1);
+}
+if(!function_exists("mb_convert_encoding")){
+    echo "PHP mbstring extension is not installed/enabled. You must have it installed and enabled to use this program.\n";
+    exit(-1);
+}
+if(!class_exists("SimpleXMLElement")){
+    echo "PHP XML extension is not installed/enabled. You must have it installed and enabled to use this program.\n";
     exit(-1);
 }
 if(exec("which playerctl 2> /dev/null") == ""){
@@ -77,17 +86,23 @@ OPTION         VALUES
 }
 
 $player = new PlayerCtl();
+$lrc = new LrcFactory(new OfflineHelper($opts->getOption("l") ?? getcwd()));
+$status = new Status();
+$precision = new PrecisionPlayers();
+
 if(($p = $opts->getOption("p")) !== null){
     foreach($player->getPlayers() as $pl){
         if($pl == $p){
             $player->setActivePlayer($pl);
+            $status->setPlayer($pl);
             break;
         }
     }
+}else{
+    $player->setActivePlayer($player->getPlayers()[0] ?? null);
+    $status->setPlayer($player->getPlayers()[0] ?? null);
 }
 
-$lrc = new LrcFactory(new OfflineHelper($opts->getOption("l") ?? getcwd()));
-$status = new Status();
 $status->setStopped(false);
 
 if(!is_null($opts->getOption("o"))){
@@ -104,6 +119,7 @@ while(true){
         };
         echo "Found a player: " . $player->getPlayers()[0] . "\n";
         $player->setActivePlayer($player->getPlayers()[0] ?? null);
+        $status->setPlayer($player->getPlayers()[0] ?? null);
         sleep(1);
     }
 
@@ -121,6 +137,7 @@ while(true){
     }catch (Exception $e){
         // why would this happen? anyway here's some dumb code
         $player->setActivePlayer($player->getPlayers()[0] ?? null);
+        $status->setPlayer($player->getPlayers()[0] ?? null);
         continue;
     }
 
@@ -129,18 +146,19 @@ while(true){
     }catch (Exception $e){
         // why would this happen? anyway here's some dumb code
         $player->setActivePlayer($player->getPlayers()[0] ?? null);
+        $status->setPlayer($player->getPlayers()[0] ?? null);
         continue;
     }
 
     if(array_diff($newInfo, array($status->getArtist(), $status->getTitle())) !== array()){
         echo "\033[2J\033[H";
-        echo "Now playing: " . $newInfo[0] . " - " . $newInfo[1] . "\n";
-        if($player->getActivePlayer() == "spotify"){
+        echo "Now playing on " . $status->getPlayer() . ": " . $newInfo[0] . " - " . $newInfo[1] . "\n";
+        if($status->getPlayer() == "spotify"){
             echo "WARNING: Spotify doesn't tell MPRIS2 the position of the track, so you'll experience static lyrics.\n";
             echo "This issue must be fixed on Spotify itself and there's nothing MPRISLyrics can do to work around this.\n";
         } // TODO: Write a proper warning handler for unsupported / partly supported players
         echo "\n";
-        $status->setLyrics($lrc->fetchLyrics($newInfo[0], $newInfo[1]));
+        $status->setLyrics($lrc->fetchLyrics($newInfo[0], $newInfo[1], $precision->isPrecisionPlayer($status->getPlayer())));
         $status->setTrackInfo($newInfo[0], $newInfo[1]);
         $status->setLastLinePosition(-1);
         $status->setLastPosition(0);
@@ -155,6 +173,7 @@ while(true){
     }catch (Exception $e){
         // why would this happen? anyway here's some dumb code
         $player->setActivePlayer($player->getPlayers()[0] ?? null);
+        $status->setPlayer($player->getPlayers()[0] ?? null);
         continue;
     }
 
