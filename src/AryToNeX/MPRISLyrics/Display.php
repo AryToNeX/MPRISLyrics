@@ -16,14 +16,14 @@ class Display{
         $status->setLastLinePosition($linepos);
     }
 
-    public static function displayWriteTextProcedurally(int $position, Status $status) : void{
+    public static function displayWriteTextProcedurally(int $position, int $maxdimens, Status $status) : void{
         $line = $status->getLyrics()->getLineVerseAt($position);
         $linepos = $status->getLyrics()->getLineIndexAt($position);
         if($linepos == $status->getLastLinePosition()) return;
 
         if($position < $status->getLastPosition()) echo "\n----------\n\n"; // if you go backwards in the track, output lyrics break
 
-        echo $line . "\n";
+        echo wordwrap($line, $maxdimens-2, "\n ", true) . "\n";
         $status->setLastLinePosition($linepos);
     }
 

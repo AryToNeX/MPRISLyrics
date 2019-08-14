@@ -16,11 +16,13 @@ class LrcFactory{
             } catch (\ReflectionException $e){
                 continue;
             }
-            $providersInfo[] = array(
-                "name" => "AryToNeX\MPRISLyrics\providers\\" . $className,
-                "priority" => $reflectionClass->getConstant("PROVIDER_PRIORITY"),
-                "is_abstract" => $reflectionClass->isAbstract()
-            );
+            if(!$reflectionClass->getConstant("DISABLED")){
+                $providersInfo[] = array(
+                    "name" => "AryToNeX\MPRISLyrics\providers\\" . $className,
+                    "priority" => $reflectionClass->getConstant("PROVIDER_PRIORITY"),
+                    "is_abstract" => $reflectionClass->isAbstract()
+                );
+            }
         }
 
         // sort information by priority

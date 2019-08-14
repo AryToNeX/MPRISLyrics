@@ -8,6 +8,7 @@ class ViewLyrics extends Provider{
     private const URL = "http://search.crintsoft.com/searchlyrics.htm";
     private const SERVER_URL = "http://minilyrics.com/";
     private const QUERY = "<?xml version='1.0' encoding='utf-8' standalone='yes' ?><searchV1 client=\"ViewLyricsOpenSearcher\" artist=\"{artist}\" title=\"{title}\" OnlyMatched=\"1\" />";
+    public const DISABLED = true;
 
     public function fetchLyrics(string $artist, string $title) : ?string{
         $query = $this->queryViewLyrics($artist, $title);

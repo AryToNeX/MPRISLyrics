@@ -201,7 +201,7 @@ while(true){
             break;
         case "linebyline":
             // This display method prints the lyrics as the song keeps playing, outputting them line by line.
-            Display::displayWriteTextProcedurally($position, $status);
+            Display::displayWriteTextProcedurally($position, $twidth, $status);
             break;
         case "rows":
         default:
